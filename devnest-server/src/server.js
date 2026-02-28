@@ -4,6 +4,12 @@ import dotenv from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import authRoutes from "./routes/authRoutes.js";
+import { protect } from "./middlewares/authMiddleware.js";
+
+
+
+
 
 dotenv.config();
 
@@ -14,6 +20,7 @@ app.use(helmet());
 app.use(cors({ origin: process.env.CLIENT_URL }));
 app.use(express.json());
 
+
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100
@@ -23,6 +30,11 @@ app.use(limiter);
 // Routes placeholder
 app.get("/", (req, res) => {
   res.send("DevNest API Running");
+});
+
+app.use("/api/auth", authRoutes);
+app.get("/api/test", protect, (req, res) => {
+  res.json({ message: "Protected route working", user: req.user });
 });
 
 // DB Connection
