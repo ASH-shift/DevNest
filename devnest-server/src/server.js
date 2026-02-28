@@ -6,6 +6,9 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import authRoutes from "./routes/authRoutes.js";
 import { protect } from "./middlewares/authMiddleware.js";
+import productRoutes from "./routes/productRoutes.js";
+
+
 
 
 
@@ -36,6 +39,7 @@ app.use("/api/auth", authRoutes);
 app.get("/api/test", protect, (req, res) => {
   res.json({ message: "Protected route working", user: req.user });
 });
+app.use("/api/products", productRoutes);
 
 // DB Connection
 mongoose.connect(process.env.MONGO_URI)
