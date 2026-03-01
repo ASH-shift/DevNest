@@ -1,26 +1,24 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
+
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import authRoutes from "./routes/authRoutes.js";
 import { protect } from "./middlewares/authMiddleware.js";
 import productRoutes from "./routes/productRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 
 
-
-
-
-
-
-dotenv.config();
 
 const app = express();
 
 // Security
 app.use(helmet());
 app.use(cors({ origin: process.env.CLIENT_URL }));
+app.use("/api/webhook", express.raw({ type: "application/json" }));
 app.use(express.json());
 
 
@@ -40,6 +38,7 @@ app.get("/api/test", protect, (req, res) => {
   res.json({ message: "Protected route working", user: req.user });
 });
 app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRoutes);
 
 // DB Connection
 mongoose.connect(process.env.MONGO_URI)
