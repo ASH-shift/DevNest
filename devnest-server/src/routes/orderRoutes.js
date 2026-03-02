@@ -8,6 +8,6 @@ import { stripeWebhook } from "../controllers/orderController.js";
 const router = express.Router();
 
 router.post("/create-checkout-session", protect, createCheckoutSession);
-router.post("/webhook", stripeWebhook);
+
 
 export default router;

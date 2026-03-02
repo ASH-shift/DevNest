@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
+import { stripeWebhook } from "./controllers/orderController.js";
 import express from "express";
 import mongoose from "mongoose";
 
@@ -18,7 +19,11 @@ const app = express();
 // Security
 app.use(helmet());
 app.use(cors({ origin: process.env.CLIENT_URL }));
-app.use("/api/webhook", express.raw({ type: "application/json" }));
+app.post(
+  "/api/orders/webhook",
+  express.raw({ type: "application/json" }),
+  stripeWebhook
+);
 app.use(express.json());
 
 
