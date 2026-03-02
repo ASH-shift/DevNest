@@ -97,3 +97,33 @@ export const stripeWebhook = async (req, res) => {
 
   res.json({ received: true });
 };
+export const getAdminStats = async (req, res) => {
+  try {
+    const stats = await Order.aggregate([
+      { $match: { paymentStatus: "paid" } },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: "$totalAmount" },
+          totalOrders: { $sum: 1 }
+        }
+      }
+    ]);
+
+    res.json(stats[0] || { totalRevenue: 0, totalOrders: 0 });
+
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+export const getUserOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({ user: req.user.id })
+      .populate("products.product")
+      .sort({ createdAt: -1 });
+
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
